@@ -7,15 +7,14 @@ import oaxws.annotation.WsMethod;
 import serialiser.factory.SerialiserFactory;
 
 import com.jaudiostream.client.JAudioStreamClient;
-import com.jtunes.util.audio.AudioPlayer;
-import com.jtunes.util.audio.AudioPlayerEventListener;
+import com.jtunes.util.audio.SynchronousTransportAudioPlayer;
 import com.jtunes.util.client.RemoteClient;
 import com.jtunes.util.domain.DeviceType;
 import com.jtunes.util.domain.JTunesTypeRegistry;
 import com.jtunes.util.webservices.JTunesWsConstants.RemotePlayerService;
 
 @WebService(name=RemotePlayerService.remotePlayer)
-public class RemotePlayer extends RemoteClient implements AudioPlayerEventListener {
+public class RemotePlayer extends RemoteClient {
 
 	public static void main(String[] args) {
 		RemotePlayer rp = new RemotePlayer();
@@ -23,7 +22,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	}
 	
 	private JAudioStreamClient jaudioStream;
-	private AudioPlayer player;
+	private SynchronousTransportAudioPlayer player;
 	private String name;
 	private boolean playing;
 	private boolean paused;
@@ -32,15 +31,9 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 		super(SerialiserFactory.getJsonSerialiser(new JTunesTypeRegistry()));
 		name = "Remote player";
 		jaudioStream = new JAudioStreamClient();
-		player = new AudioPlayer(this, jaudioStream.getInputStream());
+		player = new SynchronousTransportAudioPlayer(jaudioStream.getInputStream());
 	}
-	
-	@Override
-	protected void start(String user, String password) {
-		super.start(user, password);
-		startComplete();
-	}
-	
+			
 	@Override
 	protected void loggedIn() {
 		client.registerRemoteDevice(name, DeviceType.REMOTE_PLAYER);
@@ -54,10 +47,9 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 				fatalError();
 			}
 		} else {
-			logger.error("Jtunes did mot respond with audio streaming service address.");
+			logger.error("Jtunes did not respond with audio streaming service address.");
 			fatalError();
 		}
-		client.registerStreamingClient(jaudioStream.getLocalPort());
 	}
 		
 	@Override
@@ -65,19 +57,21 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 		super.shutdown();
 		player.stop();
 		player.terminate();
-		try {
-			jaudioStream.getInputStream().close();
-		} catch (Exception e) {}
+		jaudioStream.shutdown();
 	}
 	
 	@WsMethod(name=RemotePlayerService.pause)
 	void pause() {
 		player.pause();
+		playing = false;    
+        paused = true;	
 	}
 	
 	@WsMethod(name=RemotePlayerService.stop)
 	void stop() {
 		player.stop();
+		playing = false;
+    	paused = false;	
 	}
 	
 	@WsMethod(name=RemotePlayerService.play)
@@ -95,27 +89,21 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 					}
                 }    
                 logger.info("Got clear stream.");
-                player.play();    
+                player.play();  
+                playing = true;  
+                paused = false;  
             }        
         }
 	}
-
+	
 	@Override
-	public void onStopped() {
-		playing = false;
-    	paused = false;	
+	protected void beforeStart() {
+		
 	}
 
 	@Override
-	public void onPlaying() {
-		playing = true;  
-        paused = false;  
+	protected void onFatalError() {
+		jaudioStream.shutdown();
 	}
-
-	@Override
-	public void onPaused() {
-		playing = false;    
-        paused = true;	
-	}
-
+	
 }
