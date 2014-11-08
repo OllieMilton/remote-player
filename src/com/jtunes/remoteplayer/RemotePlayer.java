@@ -7,6 +7,7 @@ import oaxws.annotation.WsMethod;
 import serialiser.factory.SerialiserFactory;
 
 import com.jaudiostream.client.JAudioStreamClient;
+import com.jtunes.util.audio.AudioPlayer.PlayerState;
 import com.jtunes.util.audio.SynchronousTransportAudioPlayer;
 import com.jtunes.util.client.RemoteClient;
 import com.jtunes.util.domain.DeviceType;
@@ -24,14 +25,9 @@ public class RemotePlayer extends RemoteClient {
 	private JAudioStreamClient jaudioStream;
 	private SynchronousTransportAudioPlayer player;
 	private String name;
-	private boolean playing;
-	private boolean paused;
 		
 	public RemotePlayer() {
 		super(SerialiserFactory.getJsonSerialiser(new JTunesTypeRegistry()));
-		name = "Remote player";
-		jaudioStream = new JAudioStreamClient();
-		player = new SynchronousTransportAudioPlayer(jaudioStream.getInputStream());
 	}
 			
 	@Override
@@ -53,8 +49,7 @@ public class RemotePlayer extends RemoteClient {
 	}
 		
 	@Override
-	protected void shutdown() {
-		super.shutdown();
+	protected void beforeShutdown() {
 		player.stop();
 		player.terminate();
 		jaudioStream.shutdown();
@@ -63,25 +58,22 @@ public class RemotePlayer extends RemoteClient {
 	@WsMethod(name=RemotePlayerService.pause)
 	void pause() {
 		player.pause();
-		playing = false;    
-        paused = true;	
 	}
 	
 	@WsMethod(name=RemotePlayerService.stop)
 	void stop() {
 		player.stop();
-		playing = false;
-    	paused = false;	
 	}
 	
 	@WsMethod(name=RemotePlayerService.play)
 	void play() {
-		if (playing && !paused) {
-            pause();    
+		if (player.getState() == PlayerState.PLAYING) {
+            player.pause();    
         } else {
-            if (!playing) {
-                logger.info("Play received, waiting for clear stream. Playing ["+playing+"], paused ["+paused+"], clear stream ["+jaudioStream.isClear()+"]");
-                while (!playing && !jaudioStream.isClear() && !paused) {
+            if (player.getState() != PlayerState.PLAYING) {
+                logger.info("Play received, waiting for clear stream. Playing clear stream ["+jaudioStream.isClear()+"]");
+                // need to wait for a clear stream unless we are paused, if paused just play.
+                while (!jaudioStream.isClear() && player.getState() != PlayerState.PAUSED) {
                     try {
 						Thread.sleep(50);
 					} catch (InterruptedException e) {
@@ -90,19 +82,21 @@ public class RemotePlayer extends RemoteClient {
                 }    
                 logger.info("Got clear stream.");
                 player.play();  
-                playing = true;  
-                paused = false;  
             }        
         }
 	}
 	
 	@Override
 	protected void beforeStart() {
-		
+		name = "Remote player";
+		jaudioStream = new JAudioStreamClient();
+		player = new SynchronousTransportAudioPlayer(jaudioStream.getInputStream());
 	}
 
 	@Override
 	protected void onFatalError() {
+		player.stop();
+		player.terminate();
 		jaudioStream.shutdown();
 	}
 	
