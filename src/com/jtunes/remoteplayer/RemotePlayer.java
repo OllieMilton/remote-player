@@ -7,8 +7,8 @@ import oaxws.annotation.WsMethod;
 import serialiser.factory.SerialiserFactory;
 
 import com.jaudiostream.client.JAudioStreamClient;
+import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayer.PlayerState;
-import com.jtunes.util.audio.SynchronousTransportAudioPlayer;
 import com.jtunes.util.client.RemoteClient;
 import com.jtunes.util.domain.DeviceType;
 import com.jtunes.util.domain.JTunesTypeRegistry;
@@ -23,7 +23,7 @@ public class RemotePlayer extends RemoteClient {
 	}
 	
 	private JAudioStreamClient jaudioStream;
-	private SynchronousTransportAudioPlayer player;
+	private AudioPlayer player;
 	private String name;
 		
 	public RemotePlayer() {
@@ -56,17 +56,17 @@ public class RemotePlayer extends RemoteClient {
 	}
 	
 	@WsMethod(name=RemotePlayerService.pause)
-	void pause() {
+	public void pause() {
 		player.pause();
 	}
 	
 	@WsMethod(name=RemotePlayerService.stop)
-	void stop() {
+	public void stop() {
 		player.stop();
 	}
 	
 	@WsMethod(name=RemotePlayerService.play)
-	void play() {
+	public void play() {
 		if (player.getState() == PlayerState.PLAYING) {
             player.pause();    
         } else {
@@ -90,7 +90,8 @@ public class RemotePlayer extends RemoteClient {
 	protected void beforeStart() {
 		name = "Remote player";
 		jaudioStream = new JAudioStreamClient();
-		player = new SynchronousTransportAudioPlayer(jaudioStream.getInputStream());
+		player = new AudioPlayer(null, jaudioStream.getInputStream());
+		wsManager.registerWebService(this);
 	}
 
 	@Override
