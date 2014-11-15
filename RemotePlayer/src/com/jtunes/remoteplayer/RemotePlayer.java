@@ -24,8 +24,7 @@ public class RemotePlayer extends RemoteClient {
 	
 	private JAudioStreamClient jaudioStream;
 	private AudioPlayer player;
-	private String name;
-		
+			
 	public RemotePlayer() {
 		super(SerialiserFactory.getJsonSerialiser(new JTunesTypeRegistry()));
 	}
@@ -88,7 +87,6 @@ public class RemotePlayer extends RemoteClient {
 	
 	@Override
 	protected void beforeStart() {
-		name = "Remote player";
 		jaudioStream = new JAudioStreamClient();
 		player = new AudioPlayer(null, jaudioStream.getInputStream());
 		wsManager.registerWebService(this);
