@@ -49,9 +49,13 @@ public class RemotePlayer extends RemoteClient {
 		
 	@Override
 	protected void beforeShutdown() {
-		player.stop();
-		player.terminate();
-		jaudioStream.shutdown();
+		if (player != null) {
+			player.stop();
+			player.terminate();
+		}
+		if (jaudioStream != null) {
+			jaudioStream.shutdown();
+		}
 	}
 	
 	@WsMethod(name=RemotePlayerService.pause)
@@ -97,6 +101,16 @@ public class RemotePlayer extends RemoteClient {
 		player.stop();
 		player.terminate();
 		jaudioStream.shutdown();
+	}
+
+	@Override
+	protected String version() {
+		return "0.1";
+	}
+
+	@Override
+	protected String serviceName() {
+		return "RemotePlayer";
 	}
 	
 }
