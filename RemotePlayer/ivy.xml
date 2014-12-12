@@ -1,0 +1,6 @@
+<ivy-module version="2.0">
+    <info organisation="com.jtunes" module="remoteplayer"/>
+    <dependencies>
+        <dependency org="commons-logging" name="commons-logging" rev="1.2" conf="*->default"/>
+    </dependencies>
+</ivy-module>

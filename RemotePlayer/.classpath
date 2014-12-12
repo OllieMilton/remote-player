@@ -6,6 +6,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/Serialiser"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/OAX-WS"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JAudioStream"/>
-	<classpathentry kind="lib" path="/media/storage/usr/lib/java/commons-logging-1.1.1/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=RemotePlayer&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
