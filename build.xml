@@ -27,7 +27,7 @@
   	<target name="jar" depends="compile">
 		<!-- TODO make this executableand depend on JTunesUtil Build the jar file -->
 		<jar basedir="${build}" destfile="${build}/rmplayer.jar"/>
-  		<copy file="${build}/jaudiostream.jar" todir="${libDir}/rmplayer" overwrite="true"/>
+  		<!--copy file="${build}/jaudiostream.jar" todir="${libDir}/rmplayer" overwrite="true"/-->
   		<delete dir="${build}"/>
   		<delete dir="lib"/>
 	</target>
