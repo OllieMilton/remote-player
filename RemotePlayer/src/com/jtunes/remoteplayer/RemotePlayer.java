@@ -72,20 +72,13 @@ public class RemotePlayer extends RemoteClient {
 	public void play() {
 		if (player.getState() == PlayerState.PLAYING) {
             player.pause();    
+        } else if (player.getState() == PlayerState.PAUSED) {
+        	player.play();
         } else {
-            if (player.getState() != PlayerState.PLAYING) {
-                logger.info("Play received, waiting for clear stream. Playing clear stream ["+jaudioStream.isClear()+"]");
-                // need to wait for a clear stream unless we are paused, if paused just play.
-                while (!jaudioStream.isClear() && player.getState() != PlayerState.PAUSED) {
-                    try {
-						Thread.sleep(50);
-					} catch (InterruptedException e) {
-						
-					}
-                }    
-                logger.info("Got clear stream.");
-                player.play();  
-            }        
+        	logger.info("Play received, waiting for clear stream...");
+            jaudioStream.awaitClear();
+        	logger.info("Got clear stream.");
+            player.play();  
         }
 	}
 	
