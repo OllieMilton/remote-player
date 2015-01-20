@@ -10,9 +10,11 @@ import com.jaudiostream.client.JAudioStreamClient;
 import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayerEventListener;
 import com.jtunes.util.client.RemoteClient;
+import com.jtunes.util.domain.DeviceStatus;
 import com.jtunes.util.domain.DeviceType;
 import com.jtunes.util.domain.JTunesTypeRegistry;
 import com.jtunes.util.domain.PlayerState;
+import com.jtunes.util.domain.PlayerStatus;
 import com.jtunes.util.webservices.JTunesWsConstants.RemotePlayerService;
 
 @WebService(name=RemotePlayerService.remotePlayer)
@@ -25,6 +27,8 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	
 	private JAudioStreamClient jaudioStream;
 	private AudioPlayer player;
+	private PlayerStatus status = new PlayerStatus();
+	private final long statusTimeout = 700;
 				
 	public RemotePlayer() {
 		super(SerialiserFactory.getJsonSerialiser(new JTunesTypeRegistry()));
@@ -42,6 +46,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 				logger.error("Could not connect to audio streaming service.");
 				fatalError();
 			}
+			setupStatusSprayer(statusTimeout);
 		} else {
 			logger.error("Jtunes did not respond with audio streaming service address.");
 			fatalError();
@@ -109,22 +114,36 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 
 	@Override
 	public void onStopped() {
-		
+		sendStatus();
 	}
 
 	@Override
 	public void onPlaying() {
-		
+		sendStatus();
 	}
 
 	@Override
 	public void onPaused() {
-		
+		sendStatus();
 	}
 
 	@Override
 	public void onComplete() {
+		sendStatus();
 		client.followOn();
+	}
+	
+	private void sendStatus() {
+		status.setState(player.getState());
+		status.setPosition(player.position());
+		client.sendDeviceStatus(status);
+	}
+
+	@Override
+	protected DeviceStatus getStatus() {
+		status.setState(player.getState());
+		status.setPosition(player.position());
+		return status;
 	}
 	
 }
