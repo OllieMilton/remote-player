@@ -8,14 +8,15 @@ import serialiser.factory.SerialiserFactory;
 
 import com.jaudiostream.client.JAudioStreamClient;
 import com.jtunes.util.audio.AudioPlayer;
-import com.jtunes.util.audio.AudioPlayer.PlayerState;
+import com.jtunes.util.audio.AudioPlayerEventListener;
 import com.jtunes.util.client.RemoteClient;
 import com.jtunes.util.domain.DeviceType;
 import com.jtunes.util.domain.JTunesTypeRegistry;
+import com.jtunes.util.domain.PlayerState;
 import com.jtunes.util.webservices.JTunesWsConstants.RemotePlayerService;
 
 @WebService(name=RemotePlayerService.remotePlayer)
-public class RemotePlayer extends RemoteClient {
+public class RemotePlayer extends RemoteClient implements AudioPlayerEventListener {
 
 	public static void main(String[] args) {
 		RemotePlayer rp = new RemotePlayer();
@@ -24,7 +25,7 @@ public class RemotePlayer extends RemoteClient {
 	
 	private JAudioStreamClient jaudioStream;
 	private AudioPlayer player;
-			
+				
 	public RemotePlayer() {
 		super(SerialiserFactory.getJsonSerialiser(new JTunesTypeRegistry()));
 	}
@@ -85,7 +86,7 @@ public class RemotePlayer extends RemoteClient {
 	@Override
 	protected void beforeStart() {
 		jaudioStream = new JAudioStreamClient();
-		player = new AudioPlayer(null, jaudioStream.getInputStream());
+		player = new AudioPlayer(this, jaudioStream.getInputStream());
 		wsManager.registerWebService(this);
 	}
 
@@ -104,6 +105,26 @@ public class RemotePlayer extends RemoteClient {
 	@Override
 	protected String serviceName() {
 		return "RemotePlayer";
+	}
+
+	@Override
+	public void onStopped() {
+		
+	}
+
+	@Override
+	public void onPlaying() {
+		
+	}
+
+	@Override
+	public void onPaused() {
+		
+	}
+
+	@Override
+	public void onComplete() {
+		client.followOn();
 	}
 	
 }
