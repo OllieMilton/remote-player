@@ -4,6 +4,7 @@ import java.net.ConnectException;
 
 import oaxws.annotation.WebService;
 import oaxws.annotation.WsMethod;
+import oaxws.annotation.WsParam;
 import serialiser.factory.SerialiserFactory;
 
 import com.jaudiostream.client.JAudioStreamClient;
@@ -76,16 +77,29 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	
 	@WsMethod(name=RemotePlayerService.play)
 	public void play() {
-		if (player.getState() == PlayerState.PLAYING) {
-            player.pause();    
-        } else if (player.getState() == PlayerState.PAUSED) {
-        	player.play();
-        } else {
-        	logger.info("Play received, waiting for clear stream...");
-            jaudioStream.awaitClear();
-        	logger.info("Got clear stream.");
-            player.play();  
-        }
+		player.play();
+	}
+	
+	@WsMethod(name=RemotePlayerService.next)
+	public void next() {
+		player.stop();
+		logger.info("Play received, waiting for clear stream...");
+        jaudioStream.awaitClear();
+    	logger.info("Got clear stream.");
+        player.play();  
+	}
+	
+	@WsMethod(name=RemotePlayerService.seek)
+	public void seek(@WsParam(name=RemotePlayerService.seekTo) int seekTo) {
+		logger.info("Seek command received, seeking to ["+seekTo+"]");
+		boolean wasPlaying = player.getState() == PlayerState.PLAYING;
+		player.pause();
+		player.waitForState(PlayerState.PAUSED);
+		//player.stop();
+		jaudioStream.seek(seekTo);
+		if (wasPlaying) {
+			player.play();	
+		}
 	}
 	
 	@Override
