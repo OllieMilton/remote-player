@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/OAX-WS"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/JAudioStream"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=RemotePlayer&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/JustFLAC"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
