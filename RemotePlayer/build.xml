@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:ivy="antlib:org.apache.ivy.ant" basedir="." default="jar">
-	
+<!DOCTYPE project>
+<project name="JTunes" basedir="." default="jar">
+
 	<property name="build" value="build"/>
-	<property name="libDir" value="/home/ollie/workspace/ivy_cache/cache/"/>
+	<property name="libDir" value="/usr/lib/java"/>
 	<target name="clean">
 		<delete dir="${build}"/>
 	</target>
@@ -10,26 +11,55 @@
 	<target name="init" depends="clean">
 		<mkdir dir="${build}"/>
 	</target>
-	
-	<target name="resolve" description="--> retrieve dependencies with ivy" depends="init">
-		<ivy:retrieve />
-	</target>
-	
-	<target name="compile" depends="resolve">
+
+	<target name="compile" depends="util">
 		<!-- Compile the java code -->
-		<javac srcdir="src" destdir="${build}" debug="true" debuglevel="lines,vars,source">
+		<javac srcdir="src" destdir="${build}" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
 			<classpath>
-				<pathelement location="${libDir}commons-logging/commons-logging/jars/commons-logging-1.2.jar"/>
+				<pathelement location="${libDir}/commons-logging-1.1.1/commons-logging-1.1.1.jar"/>
+				<pathelement location="${libDir}/jaudiostream/jaudiostream.jar"/>
+				<pathelement location="${libDir}/serialiser/serialiser.jar"/>
+				<pathelement location="${libDir}/oax-ws/oax-ws.jar"/>
+				<pathelement location="${libDir}/jTUtil/jTUtil.jar"/>
+				<pathelement location="src/log4j.properties"/>
 			</classpath>
 		</javac>
 	</target>
 	
   	<target name="jar" depends="compile">
-		<!-- TODO make this executableand depend on JTunesUtil Build the jar file -->
-		<jar basedir="${build}" destfile="${build}/rmplayer.jar"/>
-  		<!--copy file="${build}/jaudiostream.jar" todir="${libDir}/rmplayer" overwrite="true"/-->
-  		<delete dir="${build}"/>
-  		<delete dir="lib"/>
+		<!-- Build the jar file -->
+		<jar basedir="${build}" destfile="${build}/rmplayer.jar">
+			<manifest>
+                <attribute name="Main-Class" value="com.jtunes.remoteplayer.RemotePlayer"/>
+                <!--attribute name="Class-Path" value="${manifest.classpath}"/-->
+            </manifest>
+			<zipfileset src="${libDir}/jaudiostream/jaudiostream.jar"/>
+			<zipfileset src="${libDir}/xstream-1.3.1/lib/xstream-1.3.1.jar"/>
+			<zipfileset src="${libDir}/xstream-1.3.1/lib/jettison-1.0.1.jar"/>
+			<zipfileset src="${libDir}/commons-logging-1.1.1/commons-logging-1.1.1.jar"/>
+			<zipfileset src="${libDir}/jetty/lib/jetty-io-9.0.4.v20130625.jar"/>
+			<zipfileset src="${libDir}/jetty/lib/jetty-util-9.0.4.v20130625.jar"/>
+			<zipfileset src="${libDir}/jetty/lib/websocket/websocket-api-9.0.4.v20130625.jar"/>
+			<zipfileset src="${libDir}/jetty/lib/websocket/websocket-client-9.0.4.v20130625.jar"/>
+			<zipfileset src="${libDir}/jetty/lib/websocket/websocket-common-9.0.4.v20130625.jar"/>
+			<zipfileset src="${libDir}/jetty/lib/websocket/websocket-servlet-9.0.4.v20130625.jar"/>
+			<zipfileset src="${libDir}/MpegAudioSPI1.9.5/lib/jl1.0.1.jar"/>
+			<zipfileset src="${libDir}/MpegAudioSPI1.9.5/lib/tritonus_share.jar"/>
+			<zipfileset src="${libDir}/MpegAudioSPI1.9.5/mp3spi1.9.5.jar"/>
+			<zipfileset src="${libDir}/jaudiotagger-2.0.3/jaudiotagger-2.0.3.jar"/>
+			<zipfileset src="${libDir}/jflac/jflac-1.2/jflac-1.2.jar"/>
+			<zipfileset src="${libDir}/serialiser/serialiser.jar"/>
+			<zipfileset src="${libDir}/multicaster/multicaster.jar"/>
+			<zipfileset src="${libDir}/oax-ws/oax-ws.jar"/>
+			<zipfileset src="${libDir}/jTUtil/jTUtil.jar"/>
+			<fileset file="src/log4j.properties"/>
+		</jar>
 	</target>
-  	
+	
+	<target name="util" depends="init">
+		<echo message="			*************** building JTunesUtil ***************"/>
+		<ant antfile="/home/ollie/workspace/jTunesUtil/build.xml" inheritAll="false"/>
+	</target>
+	
+
 </project>
