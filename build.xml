@@ -52,6 +52,7 @@
 			<zipfileset src="${libDir}/multicaster/multicaster.jar"/>
 			<zipfileset src="${libDir}/oax-ws/oax-ws.jar"/>
 			<zipfileset src="${libDir}/jTUtil/jTUtil.jar"/>
+			<zipfileset src="${libDir}/apache-log4j-1.2.16/log4j-1.2.16.jar"/>
 			<fileset file="src/log4j.properties"/>
 		</jar>
 	</target>
