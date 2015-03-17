@@ -47,7 +47,6 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 				logger.error("Could not connect to audio streaming service.");
 				fatalError();
 			}
-			setupStatusSprayer(statusTimeout);
 		} else {
 			logger.error("Jtunes did not respond with audio streaming service address.");
 			fatalError();
@@ -128,31 +127,30 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 
 	@Override
 	public void onStopped() {
-		sendStatus();
+		stopStatus();
 	}
 
 	@Override
 	public void onPlaying() {
-		sendStatus();
+		broadcastStatus(statusTimeout);
 	}
 
 	@Override
 	public void onPaused() {
-		sendStatus();
+		stopStatus();
+	}
+	
+	@Override
+	public void onWaiting() {
+		stopStatus();
 	}
 
 	@Override
 	public void onComplete() {
-		sendStatus();
+		stopStatus();
 		client.followOn();
 	}
 	
-	private void sendStatus() {
-		status.setState(player.getState());
-		status.setPosition(player.position());
-		client.sendDeviceStatus(status);
-	}
-
 	@Override
 	protected DeviceStatus getStatus() {
 		status.setState(player.getState());
