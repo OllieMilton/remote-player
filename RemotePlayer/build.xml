@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE project>
-<project name="JTunes" basedir="." default="jar">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" name="JTunes" basedir="." default="jar">
 
 	<property name="build" value="build"/>
-	<property name="libDir" value="/usr/lib/java"/>
+	<ivy:cachepath pathid="default.classpath" />
+	
 	<target name="clean">
 		<delete dir="${build}"/>
 	</target>
@@ -11,18 +11,16 @@
 	<target name="init" depends="clean">
 		<mkdir dir="${build}"/>
 	</target>
+	
+	<target name="resolve" description="--> retrieve dependencies with ivy" depends="init">
+		<ivy:retrieve />
+		<ivy:cachepath pathid="default.classpath" />
+	</target>
 
-	<target name="compile" depends="util">
+	<target name="compile" depends="resolve">
 		<!-- Compile the java code -->
 		<javac srcdir="src" destdir="${build}" debug="true" debuglevel="lines,vars,source" includeantruntime="false">
-			<classpath>
-				<pathelement location="${libDir}/commons-logging-1.1.1/commons-logging-1.1.1.jar"/>
-				<pathelement location="${libDir}/jaudiostream/jaudiostream.jar"/>
-				<pathelement location="${libDir}/serialiser/serialiser.jar"/>
-				<pathelement location="${libDir}/oax-ws/oax-ws.jar"/>
-				<pathelement location="${libDir}/jTUtil/jTUtil.jar"/>
-				<pathelement location="src/log4j.properties"/>
-			</classpath>
+			<classpath refid="default.classpath" />
 		</javac>
 	</target>
 	
@@ -56,11 +54,5 @@
 			<fileset file="src/log4j.properties"/>
 		</jar>
 	</target>
-	
-	<target name="util" depends="init">
-		<echo message="			*************** building JTunesUtil ***************"/>
-		<ant antfile="/home/ollie/workspace/jTunesUtil/build.xml" inheritAll="false"/>
-	</target>
-	
 
 </project>
