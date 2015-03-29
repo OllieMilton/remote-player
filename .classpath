@@ -2,10 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/jTunesUtil"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/Serialiser"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/OAX-WS"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/JAudioStream"/>
 	<classpathentry kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?project=RemotePlayer&amp;ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
