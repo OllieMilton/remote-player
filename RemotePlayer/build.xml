@@ -2,7 +2,9 @@
 <project xmlns:ivy="antlib:org.apache.ivy.ant" name="JTunes" basedir="." default="jar">
 
 	<property name="build" value="build"/>
+	<property name="lib.dir" value="lib"/>
 	<ivy:cachepath pathid="default.classpath" />
+	<ivy:settings file="/home/ollie/workspace/ivy_settings/ivysettings.xml" />
 	
 	<target name="clean">
 		<delete dir="${build}"/>
@@ -31,28 +33,13 @@
                 <attribute name="Main-Class" value="com.jtunes.remoteplayer.RemotePlayer"/>
                 <!--attribute name="Class-Path" value="${manifest.classpath}"/-->
             </manifest>
-			<zipfileset src="${libDir}/jaudiostream/jaudiostream.jar"/>
-			<zipfileset src="${libDir}/xstream-1.3.1/lib/xstream-1.3.1.jar"/>
-			<zipfileset src="${libDir}/xstream-1.3.1/lib/jettison-1.0.1.jar"/>
-			<zipfileset src="${libDir}/commons-logging-1.1.1/commons-logging-1.1.1.jar"/>
-			<zipfileset src="${libDir}/jetty/lib/jetty-io-9.0.4.v20130625.jar"/>
-			<zipfileset src="${libDir}/jetty/lib/jetty-util-9.0.4.v20130625.jar"/>
-			<zipfileset src="${libDir}/jetty/lib/websocket/websocket-api-9.0.4.v20130625.jar"/>
-			<zipfileset src="${libDir}/jetty/lib/websocket/websocket-client-9.0.4.v20130625.jar"/>
-			<zipfileset src="${libDir}/jetty/lib/websocket/websocket-common-9.0.4.v20130625.jar"/>
-			<zipfileset src="${libDir}/jetty/lib/websocket/websocket-servlet-9.0.4.v20130625.jar"/>
-			<zipfileset src="${libDir}/MpegAudioSPI1.9.5/lib/jl1.0.1.jar"/>
-			<zipfileset src="${libDir}/MpegAudioSPI1.9.5/lib/tritonus_share.jar"/>
-			<zipfileset src="${libDir}/MpegAudioSPI1.9.5/mp3spi1.9.5.jar"/>
-			<zipfileset src="${libDir}/jaudiotagger-2.0.3/jaudiotagger-2.0.3.jar"/>
-			<zipfileset src="${libDir}/jflac/jflac-1.2/jflac-1.2.jar"/>
-			<zipfileset src="${libDir}/serialiser/serialiser.jar"/>
-			<zipfileset src="${libDir}/multicaster/multicaster.jar"/>
-			<zipfileset src="${libDir}/oax-ws/oax-ws.jar"/>
-			<zipfileset src="${libDir}/jTUtil/jTUtil.jar"/>
-			<zipfileset src="${libDir}/apache-log4j-1.2.16/log4j-1.2.16.jar"/>
+			<zipgroupfileset dir="${lib.dir}">
+				<include name="**/*.jar" />
+			</zipgroupfileset>
 			<fileset file="src/log4j.properties"/>
 		</jar>
+  		<delete dir="${lib.dir}"/>
+  		<delete dir="${build}/com"/>
 	</target>
 
 </project>
