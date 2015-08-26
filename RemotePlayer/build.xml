@@ -4,7 +4,7 @@
 	<property name="build" value="build"/>
 	<property name="lib.dir" value="lib"/>
 	<ivy:cachepath pathid="default.classpath" />
-	<ivy:settings file="/home/ollie/workspace/ivy_settings/ivysettings.xml" />
+	<ivy:settings file="../ivy_settings/ivysettings.xml" />
 	
 	<target name="clean">
 		<delete dir="${build}"/>
