@@ -44,7 +44,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 			try {
 				jaudioStream.connect(addr[0], Integer.valueOf(addr[1]).intValue(), name);
 			} catch (ConnectException | NumberFormatException e) {
-				logger.error("Could not connect to audio streaming service.");
+				logger.error("Could not connect to audio streaming service.", e);
 				fatalError();
 			}
 		} else {
