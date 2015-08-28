@@ -2,21 +2,20 @@ package com.jtunes.remoteplayer;
 
 import java.net.ConnectException;
 
-import oaxws.annotation.WebService;
-import oaxws.annotation.WsMethod;
-import oaxws.annotation.WsParam;
-import serialiser.factory.SerialiserFactory;
-
 import com.jaudiostream.client.JAudioStreamClient;
 import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayerEventListener;
 import com.jtunes.util.client.RemoteClient;
 import com.jtunes.util.domain.DeviceStatus;
 import com.jtunes.util.domain.DeviceType;
-import com.jtunes.util.domain.JTunesTypeRegistry;
 import com.jtunes.util.domain.PlayerState;
 import com.jtunes.util.domain.PlayerStatus;
 import com.jtunes.util.webservices.JTunesWsConstants.RemotePlayerService;
+
+import oaxws.annotation.WebService;
+import oaxws.annotation.WsMethod;
+import oaxws.annotation.WsParam;
+import serialiser.factory.SerialiserFactory;
 
 @WebService(name=RemotePlayerService.remotePlayer)
 public class RemotePlayer extends RemoteClient implements AudioPlayerEventListener {
@@ -32,7 +31,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	private final long statusTimeout = 700;
 				
 	public RemotePlayer() {
-		super(SerialiserFactory.getJsonSerialiser(new JTunesTypeRegistry()));
+		super(SerialiserFactory.getJsonSerialiser());
 	}
 			
 	@Override
