@@ -2,7 +2,12 @@ package com.jtunes.remoteplayer;
 
 import java.net.ConnectException;
 
-import com.jaudiostream.client.JAudioStreamClient;
+import oaxws.annotation.WebService;
+import oaxws.annotation.WsMethod;
+import oaxws.annotation.WsParam;
+import serialiser.factory.SerialiserFactory;
+
+import com.jaudiostream.client.SlidingWindowClient;
 import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayerEventListener;
 import com.jtunes.util.client.RemoteClient;
@@ -12,11 +17,6 @@ import com.jtunes.util.domain.PlayerState;
 import com.jtunes.util.domain.PlayerStatus;
 import com.jtunes.util.webservices.JTunesWsConstants.RemotePlayerService;
 
-import oaxws.annotation.WebService;
-import oaxws.annotation.WsMethod;
-import oaxws.annotation.WsParam;
-import serialiser.factory.SerialiserFactory;
-
 @WebService(name=RemotePlayerService.remotePlayer)
 public class RemotePlayer extends RemoteClient implements AudioPlayerEventListener {
 
@@ -25,7 +25,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 		rp.start("remote_player", "remote_player");
 	}
 	
-	private JAudioStreamClient jaudioStream;
+	private SlidingWindowClient jaudioStream;
 	private AudioPlayer player;
 	private PlayerStatus status = new PlayerStatus();
 	private final long statusTimeout = 700;
@@ -104,7 +104,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	
 	@Override
 	protected void beforeStart() {
-		jaudioStream = new JAudioStreamClient();
+		jaudioStream = new SlidingWindowClient();
 		player = new AudioPlayer(this, jaudioStream.getInputStream());
 		wsManager.registerWebService(this);
 	}
