@@ -37,6 +37,7 @@
 				<include name="**/*.jar" />
 			</zipgroupfileset>
 			<fileset file="src/log4j.properties"/>
+			<fileset dir="src" includes="**/*.java"/>
 		</jar>
   		<delete dir="${lib.dir}"/>
   		<delete dir="${build}/com"/>
