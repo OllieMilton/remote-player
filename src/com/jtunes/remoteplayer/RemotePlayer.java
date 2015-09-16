@@ -39,9 +39,9 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 		client.registerRemoteDevice(name, DeviceType.REMOTE_PLAYER);
 		String audioStreamAddress = getServerAudioAddress();
 		if (audioStreamAddress != null) {
-			String[] addr = audioStreamAddress.split(",");
 			try {
-				jaudioStream.connect(addr[0], Integer.valueOf(addr[1]).intValue(), name);
+				audioStreamAddress += name;
+				jaudioStream.connect(audioStreamAddress);
 			} catch (ConnectException | NumberFormatException e) {
 				logger.error("Could not connect to audio streaming service.", e);
 				fatalError();
