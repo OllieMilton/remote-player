@@ -1,6 +1,7 @@
 package com.jtunes.remoteplayer;
 
 import java.net.ConnectException;
+import java.net.URISyntaxException;
 
 import oaxws.annotation.WebService;
 import oaxws.annotation.WsMethod;
@@ -36,13 +37,15 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 			
 	@Override
 	protected void loggedIn() {
-		client.registerRemoteDevice(name, DeviceType.REMOTE_PLAYER);
 		String audioStreamAddress = getServerAudioAddress();
 		if (audioStreamAddress != null) {
 			try {
-				audioStreamAddress += name;
+				audioStreamAddress += "/slwindow?"+name;
+				logger.info("Connecting to server at address ["+audioStreamAddress+"]");
 				jaudioStream.connect(audioStreamAddress);
-			} catch (ConnectException | NumberFormatException e) {
+				player = new AudioPlayer(this, jaudioStream.getInputStream());
+				client.registerRemoteDevice(name, DeviceType.REMOTE_PLAYER);
+			} catch (ConnectException | NumberFormatException | URISyntaxException e) {
 				logger.error("Could not connect to audio streaming service.", e);
 				fatalError();
 			}
@@ -105,15 +108,18 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	@Override
 	protected void beforeStart() {
 		jaudioStream = new SlidingWindowClient();
-		player = new AudioPlayer(this, jaudioStream.getInputStream());
 		wsManager.registerWebService(this);
 	}
 
 	@Override
 	protected void onFatalError() {
-		player.stop();
-		player.terminate();
-		jaudioStream.shutdown();
+		if (player != null) {
+			player.stop();
+			player.terminate();
+		}
+		if (jaudioStream != null) {
+			jaudioStream.shutdown();
+		}
 	}
 
 	@Override
