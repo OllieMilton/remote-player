@@ -54,9 +54,8 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 			fatalError();
 		}
 	}
-		
-	@Override
-	protected void beforeShutdown() {
+	
+	private void terminate() {
 		if (player != null) {
 			player.stop();
 			player.terminate();
@@ -64,6 +63,11 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 		if (jaudioStream != null) {
 			jaudioStream.shutdown();
 		}
+	}
+		
+	@Override
+	protected void beforeShutdown() {
+		terminate();
 	}
 	
 	@WsMethod(name=RemotePlayerService.pause)
@@ -113,13 +117,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 
 	@Override
 	protected void onFatalError() {
-		if (player != null) {
-			player.stop();
-			player.terminate();
-		}
-		if (jaudioStream != null) {
-			jaudioStream.shutdown();
-		}
+		terminate();
 	}
 
 	@Override
