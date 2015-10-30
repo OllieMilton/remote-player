@@ -20,7 +20,7 @@ import com.jtunes.util.domain.PlayerStatus;
 import com.jtunes.util.webservices.JTunesWsConstants.RemotePlayerService;
 
 @RunnableClient
-@WebService(name=RemotePlayerService.remotePlayer)
+@WebService(RemotePlayerService.remotePlayer)
 public class RemotePlayer extends RemoteClient implements AudioPlayerEventListener {
 
 	private SlidingWindowClient jaudioStream;
@@ -69,23 +69,23 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 		terminate();
 	}
 	
-	@WsMethod(name=RemotePlayerService.pause)
+	@WsMethod(RemotePlayerService.pause)
 	public void pause() {
 		player.pause();
 	}
 	
-	@WsMethod(name=RemotePlayerService.stop)
+	@WsMethod(RemotePlayerService.stop)
 	public void stop() {
 		player.stop();
 		player.waitForState(PlayerState.STOPPED);
 	}
 	
-	@WsMethod(name=RemotePlayerService.play)
+	@WsMethod(RemotePlayerService.play)
 	public void play() {
 		player.play();
 	}
 	
-	@WsMethod(name=RemotePlayerService.next)
+	@WsMethod(RemotePlayerService.next)
 	public void next() {
 		player.stop();
 		logger.info("Play received, waiting for clear stream...");
@@ -95,8 +95,8 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
         player.play();  
 	}
 	
-	@WsMethod(name=RemotePlayerService.seek)
-	public void seek(@WsParam(name=RemotePlayerService.seekTo) int seekTo) {
+	@WsMethod(RemotePlayerService.seek)
+	public void seek(@WsParam(RemotePlayerService.seekTo) int seekTo) {
 		logger.info("Seek command received, seeking to ["+seekTo+"]");
 		boolean wasPlaying = player.getState() == PlayerState.PLAYING;
 		player.pause();
