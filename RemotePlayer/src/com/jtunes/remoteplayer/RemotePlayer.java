@@ -12,20 +12,17 @@ import com.jaudiostream.client.SlidingWindowClient;
 import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayerEventListener;
 import com.jtunes.util.client.RemoteClient;
+import com.jtunes.util.client.RunnableClient;
 import com.jtunes.util.domain.DeviceStatus;
 import com.jtunes.util.domain.DeviceType;
 import com.jtunes.util.domain.PlayerState;
 import com.jtunes.util.domain.PlayerStatus;
 import com.jtunes.util.webservices.JTunesWsConstants.RemotePlayerService;
 
+@RunnableClient
 @WebService(name=RemotePlayerService.remotePlayer)
 public class RemotePlayer extends RemoteClient implements AudioPlayerEventListener {
 
-	public static void main(String[] args) {
-		RemotePlayer rp = new RemotePlayer();
-		rp.start("remote_player", "remote_player");
-	}
-	
 	private SlidingWindowClient jaudioStream;
 	private AudioPlayer player;
 	private PlayerStatus status = new PlayerStatus();
