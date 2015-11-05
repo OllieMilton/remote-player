@@ -161,5 +161,10 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 		status.setPosition(player.position());
 		return status;
 	}
+
+	@Override
+	protected void mainHook() {
+
+	}
 	
 }
