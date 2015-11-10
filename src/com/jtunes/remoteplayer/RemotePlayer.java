@@ -3,11 +3,6 @@ package com.jtunes.remoteplayer;
 import java.net.ConnectException;
 import java.net.URISyntaxException;
 
-import oaxws.annotation.WebService;
-import oaxws.annotation.WsMethod;
-import oaxws.annotation.WsParam;
-import serialiser.factory.SerialiserFactory;
-
 import com.jaudiostream.client.SlidingWindowClient;
 import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayerEventListener;
@@ -19,6 +14,12 @@ import com.jtunes.util.domain.DeviceType;
 import com.jtunes.util.domain.PlayerState;
 import com.jtunes.util.domain.PlayerStatus;
 import com.jtunes.util.webservices.JTunesWsConstants.RemotePlayerService;
+
+import oaxws.annotation.WebService;
+import oaxws.annotation.WsMethod;
+import oaxws.annotation.WsParam;
+import oaxws.domain.WsSession;
+import serialiser.factory.SerialiserFactory;
 
 @RunnableClient
 @WebService(RemotePlayerService.remotePlayer)
@@ -34,7 +35,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	}
 			
 	@Override
-	protected void loggedIn() {
+	protected void loggedIn(WsSession session) {
 		String audioStreamAddress = getAddress(JTunesAddress.AUDIO_STREAM_ADDRESS);
 		if (audioStreamAddress != null) {
 			try {
