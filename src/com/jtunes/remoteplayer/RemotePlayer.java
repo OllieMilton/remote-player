@@ -11,6 +11,7 @@ import serialiser.factory.SerialiserFactory;
 import com.jaudiostream.client.SlidingWindowClient;
 import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayerEventListener;
+import com.jtunes.util.client.JTunesAddress;
 import com.jtunes.util.client.RemoteClient;
 import com.jtunes.util.client.RunnableClient;
 import com.jtunes.util.domain.DeviceStatus;
@@ -34,7 +35,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 			
 	@Override
 	protected void loggedIn() {
-		String audioStreamAddress = getServerAudioAddress();
+		String audioStreamAddress = getAddress(JTunesAddress.AUDIO_STREAM_ADDRESS);
 		if (audioStreamAddress != null) {
 			try {
 				audioStreamAddress += "/slwindow?"+name;
