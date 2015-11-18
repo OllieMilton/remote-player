@@ -4,8 +4,10 @@ import java.net.ConnectException;
 import java.net.URISyntaxException;
 
 import com.jaudiostream.client.SlidingWindowClient;
+import com.jtunes.util.audio.Analiser.AudioLevel;
 import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayerEventListener;
+import com.jtunes.util.audio.LevelListener;
 import com.jtunes.util.client.JTunesAddress;
 import com.jtunes.util.client.RemoteClient;
 import com.jtunes.util.client.RunnableClient;
@@ -23,12 +25,12 @@ import serialiser.factory.SerialiserFactory;
 
 @RunnableClient
 @WebService(RemotePlayerService.remotePlayer)
-public class RemotePlayer extends RemoteClient implements AudioPlayerEventListener {
+public class RemotePlayer extends RemoteClient implements AudioPlayerEventListener, LevelListener {
 
 	private SlidingWindowClient jaudioStream;
 	private AudioPlayer player;
 	private PlayerStatus status = new PlayerStatus();
-	private final long statusTimeout = 700;
+	private final long statusTimeout = 75;
 				
 	public RemotePlayer() {
 		super(SerialiserFactory.getJsonSerialiser());
@@ -43,9 +45,12 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 				logger.info("Connecting to server at address ["+audioStreamAddress+"]");
 				jaudioStream.connect(audioStreamAddress);
 				if (player == null) {
-					player = new AudioPlayer(this, jaudioStream.getInputStream());
+					player = new AudioPlayer(this, this, jaudioStream.getInputStream());
 				}
 				client.registerRemoteDevice(name, DeviceType.REMOTE_PLAYER);
+				if (player.is(PlayerState.PLAYING)) {
+					broadcastStatus(statusTimeout);
+				}
 			} catch (ConnectException | NumberFormatException | URISyntaxException e) {
 				logger.error("Could not connect to audio streaming service.", e);
 				fatalError();
@@ -167,6 +172,25 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	@Override
 	protected void mainHook() {
 
+	}
+
+	@Override
+	public void onLevelChange(AudioLevel level) {
+		// convert infinite values to tangible numbers
+		if (level.leftDb == Float.NEGATIVE_INFINITY) {
+			status.setLeftLevel(-100);
+		} else if (level.leftDb == Float.POSITIVE_INFINITY) {
+			status.setLeftLevel(10);
+		} else {
+			status.setLeftLevel(level.leftDb);
+		}
+		if (level.rightDb == Float.NEGATIVE_INFINITY) {
+			status.setRightLevel(-100);
+		} else if (level.rightDb == Float.POSITIVE_INFINITY) {
+			status.setRightLevel(10);
+		} else {
+			status.setRightLevel(level.rightDb);
+		}
 	}
 	
 }
