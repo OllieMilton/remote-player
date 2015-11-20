@@ -2,8 +2,11 @@ package com.jtunes.remoteplayer;
 
 import java.net.ConnectException;
 import java.net.URISyntaxException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.jaudiostream.client.SlidingWindowClient;
+import com.jaudiostream.client.SlidingWindowClient.State;
 import com.jtunes.util.audio.Analiser.AudioLevel;
 import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayerEventListener;
@@ -79,6 +82,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	@WsMethod(RemotePlayerService.pause)
 	public void pause() {
 		player.pause();
+		player.waitForState(PlayerState.PAUSED);
 	}
 	
 	@WsMethod(RemotePlayerService.stop)
@@ -90,16 +94,20 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	@WsMethod(RemotePlayerService.play)
 	public void play() {
 		player.play();
+		waitForPlaying();
 	}
 	
 	@WsMethod(RemotePlayerService.next)
 	public void next() {
+		logger.info("Received next command");
 		player.stop();
 		logger.info("Play received, waiting for clear stream...");
 		player.waitForState(PlayerState.STOPPED);
+        logger.info("Waiting for clear stream.");
         jaudioStream.awaitClear();
     	logger.info("Got clear stream.");
         player.play();  
+        waitForPlaying();
 	}
 	
 	@WsMethod(RemotePlayerService.seek)
@@ -111,14 +119,28 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 		//player.stop();
 		jaudioStream.seek(seekTo);
 		if (wasPlaying) {
-			player.play();	
+			player.play();
+			waitForPlaying();
+		}
+	}
+	
+	private void waitForPlaying() {
+		try {
+			player.waitForState(PlayerState.PLAYING, 1, TimeUnit.SECONDS);
+		} catch (TimeoutException e) {
+			// do nothing except log an error
+			logger.error("Timedout waiting for audio player to play.");
 		}
 	}
 	
 	@Override
 	protected void beforeStart() {
-		jaudioStream = new SlidingWindowClient();
+		jaudioStream = new SlidingWindowClient((newState, oldState) -> handleStreamStateChange(newState, oldState));
 		wsManager.registerWebService(this);
+	}
+	
+	private void handleStreamStateChange(State newState, State oldState) {
+		logger.info("Stream state transition new ["+newState+"] old ["+oldState+"]");
 	}
 
 	@Override
