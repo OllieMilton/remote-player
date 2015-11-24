@@ -99,18 +99,18 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	
 	@WsMethod(RemotePlayerService.next)
 	public void next() {
-		logger.info("Received next command");
+		logger.info("\n\n******************  Received next command  *******************");
 		player.stop();
-		logger.info("Play received, waiting for clear stream...");
+		logger.info("Waiting for player to stop...");
 		player.waitForState(PlayerState.STOPPED);
-        logger.info("Waiting for clear stream.");
+        logger.info("Waiting for clear stream...");
         try {
 			jaudioStream.awaitClear(-1L, null);
 			logger.info("Got clear stream.");
 	        player.play();  
 	        waitForPlaying();
 		} catch (TimeoutException e) {
-			logger.error("Timeout waiting for clear stream.", e);
+			logger.error("Timeout waiting for clear stream!", e);
 		}
 	}
 	
