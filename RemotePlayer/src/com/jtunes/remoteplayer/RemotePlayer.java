@@ -24,8 +24,10 @@ import oaxws.annotation.WebService;
 import oaxws.annotation.WsMethod;
 import oaxws.annotation.WsParam;
 import oaxws.domain.WsSession;
+import ollie.utils.logging.LogProvider;
 import serialiser.factory.SerialiserFactory;
 
+@LogProvider
 @RunnableClient
 @WebService(RemotePlayerService.remotePlayer)
 public class RemotePlayer extends RemoteClient implements AudioPlayerEventListener, LevelListener {
@@ -50,7 +52,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 				if (player == null) {
 					player = new AudioPlayer(this, this, jaudioStream.getInputStream());
 				}
-				client.registerRemoteDevice(name, DeviceType.REMOTE_PLAYER);
+				registerRemoteDevice(DeviceType.REMOTE_PLAYER);
 				if (player.is(PlayerState.PLAYING)) {
 					broadcastStatus(statusTimeout);
 				}
