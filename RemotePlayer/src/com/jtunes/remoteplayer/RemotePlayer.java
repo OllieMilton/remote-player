@@ -12,7 +12,7 @@ import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayerEventListener;
 import com.jtunes.util.audio.LevelListener;
 import com.jtunes.util.client.JTunesAddress;
-import com.jtunes.util.client.RemoteClient;
+import com.jtunes.util.client.RemoteDeviceClient;
 import com.jtunes.util.client.RunnableClient;
 import com.jtunes.util.domain.DeviceStatus;
 import com.jtunes.util.domain.DeviceType;
@@ -30,7 +30,7 @@ import serialiser.factory.SerialiserFactory;
 @LogProvider
 @RunnableClient
 @WebService(RemotePlayerService.remotePlayer)
-public class RemotePlayer extends RemoteClient implements AudioPlayerEventListener, LevelListener {
+public class RemotePlayer extends RemoteDeviceClient implements AudioPlayerEventListener, LevelListener {
 
 	private SlidingWindowClient jaudioStream;
 	private AudioPlayer player;
@@ -38,7 +38,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 	private final long statusTimeout = 75;
 				
 	public RemotePlayer() {
-		super(SerialiserFactory.getJsonSerialiser());
+		super(SerialiserFactory.getJsonSerialiser(), DeviceType.REMOTE_PLAYER);
 	}
 			
 	@Override
@@ -52,7 +52,7 @@ public class RemotePlayer extends RemoteClient implements AudioPlayerEventListen
 				if (player == null) {
 					player = new AudioPlayer(this, this, jaudioStream.getInputStream());
 				}
-				registerRemoteDevice(DeviceType.REMOTE_PLAYER);
+				registerRemoteDevice();
 				if (player.is(PlayerState.PLAYING)) {
 					broadcastStatus(statusTimeout);
 				}
