@@ -193,7 +193,8 @@ public class RemotePlayer extends RemoteDeviceClient implements AudioPlayerEvent
 	@Override
 	protected DeviceStatus getStatus() {
 		status.setState(player.getState());
-		status.setPosition(player.position());
+		status.setPositionSecs(player.positionSecs());
+		status.setPositionMilliSecs(player.positionMilliSecs());
 		return status;
 	}
 
