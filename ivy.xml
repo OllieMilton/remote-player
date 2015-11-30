@@ -1,7 +1,7 @@
 <ivy-module version="2.0">
     <info organisation="com.jtunes" module="remoteplayer"/>
     <dependencies>
-    	<dependency org="ollie.utils" name="utils" rev="1.42" conf="* -> master"/>
+    	<dependency org="ollie.utils" name="utils" rev="1.46" conf="* -> master"/>
         <dependency org="commons-logging" name="commons-logging" rev="1.2" conf="* -> default"/>
         <dependency org="oax-ws" name="oax-ws" rev="1.21" conf="* -> master"/>
         <dependency org="org.eclipse.jetty" name="jetty-io" rev="9.2.10.v20150310" conf="* -> master"/>
@@ -14,7 +14,7 @@
         <dependency org="com.thoughtworks.xstream" name="xstream" rev="1.3.1" conf="* -> master"/>
         <dependency org="org.scannotation" name="scannotation" rev="1.0.3" conf="* -> master"/>
         <dependency org="org.javassist" name="javassist" rev="3.19.0-GA" conf="* -> master"/>
-        <dependency org="com.jtunes" name="jtunesutil" rev="1.147" conf="* -> master"/>
+        <dependency org="com.jtunes" name="jtunesutil" rev="1.150" conf="* -> master"/>
         <dependency org="com.jaudiostream" name="jaudiostream" rev="1.49" conf="* -> default"/>
         <dependency org="multicaster" name="multicaster" rev="1.03" conf="* -> default"/>
         <dependency org="org.codehaus.jettison" name="jettison" rev="1.0.1" />
