@@ -35,7 +35,7 @@ public class RemotePlayer extends RemoteDeviceClient implements AudioPlayerEvent
 	private SlidingWindowClient jaudioStream;
 	private AudioPlayer player;
 	private PlayerStatus status = new PlayerStatus();
-	private final long statusTimeout = 75;
+	private final long statusTimeout = 140;
 				
 	public RemotePlayer() {
 		super(SerialiserFactory.getJsonSerialiser(), DeviceType.REMOTE_PLAYER);
