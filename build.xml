@@ -30,7 +30,7 @@
 		<!-- Build the jar file -->
 		<jar basedir="${build}" destfile="${build}/rmplayer.jar">
 			<manifest>
-                <attribute name="Main-Class" value="com.jtunes.util.client.RemoteClient"/>
+                <attribute name="Main-Class" value="com.jtunes.remoteplayer.RemotePlayer"/>
             </manifest>
 			<zipgroupfileset dir="${lib.dir}">
 				<include name="**/*.jar" />
