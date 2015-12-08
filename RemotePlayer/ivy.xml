@@ -3,7 +3,7 @@
     <dependencies>
     	<dependency org="ollie.utils" name="utils" rev="1.46" conf="* -> master"/>
         <dependency org="commons-logging" name="commons-logging" rev="1.2" conf="* -> default"/>
-        <dependency org="oax-ws" name="oax-ws" rev="1.21" conf="* -> master"/>
+        <dependency org="oax-ws" name="oax-ws" rev="1.23" conf="* -> master"/>
         <dependency org="org.eclipse.jetty" name="jetty-io" rev="9.2.10.v20150310" conf="* -> master"/>
         <dependency org="org.eclipse.jetty" name="jetty-util" rev="9.2.10.v20150310" conf="* -> master"/>
         <dependency org="org.eclipse.jetty.websocket" name="websocket-api" rev="9.2.10.v20150310" conf="* -> master"/>
