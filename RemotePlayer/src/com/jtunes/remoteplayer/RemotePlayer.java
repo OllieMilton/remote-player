@@ -87,8 +87,13 @@ public class RemotePlayer extends RemoteDeviceClient implements AudioPlayerEvent
 	
 	@WsMethod(RemotePlayerService.stop)
 	public void stop() {
-		player.stop();
-		player.waitForState(PlayerState.STOPPED);
+		logger.info("\n\n******************  Received stop command  *******************");
+		if (player.is(PlayerState.PLAYING) || player.is(PlayerState.PAUSED) || player.is(PlayerState.STOPPING)) {
+			player.stop();
+			logger.info("Waiting for player to stop...");
+			player.waitForState(PlayerState.STOPPED);
+			logger.info("Done.");
+		}
 	}
 	
 	@WsMethod(RemotePlayerService.play)
@@ -100,11 +105,6 @@ public class RemotePlayer extends RemoteDeviceClient implements AudioPlayerEvent
 	@WsMethod(RemotePlayerService.next)
 	public void next() {
 		logger.info("\n\n******************  Received next command  *******************");
-		if (player.is(PlayerState.PLAYING) || player.is(PlayerState.PAUSED) || player.is(PlayerState.STOPPING)) {
-			player.stop();
-			logger.info("Waiting for player to stop...");
-			player.waitForState(PlayerState.STOPPED);
-		}
         logger.info("Waiting for clear stream...");
         try {
 			jaudioStream.awaitClear(-1L, null);
