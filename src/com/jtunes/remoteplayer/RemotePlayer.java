@@ -23,11 +23,12 @@ import com.jtunes.util.webservices.JTunesWsConstants.RemotePlayerService;
 import oaxws.annotation.WebService;
 import oaxws.annotation.WsMethod;
 import oaxws.annotation.WsParam;
+import oaxws.domain.AccessLevel;
 import oaxws.domain.WsSession;
 import serialiser.factory.SerialiserFactory;
 
 @RunnableClient
-@WebService(RemotePlayerService.remotePlayer)
+@WebService(value=RemotePlayerService.remotePlayer, accessLevel=AccessLevel.TWO)
 public class RemotePlayer extends RemoteDeviceClient implements AudioPlayerEventListener, LevelListener {
 
 	private SlidingWindowClient jaudioStream;
