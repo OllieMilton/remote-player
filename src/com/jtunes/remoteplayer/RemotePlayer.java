@@ -157,7 +157,7 @@ public class RemotePlayer extends RemoteDeviceClient implements AudioPlayerEvent
 
 	@Override
 	protected String version() {
-		return "0.2";
+		return "1.0";
 	}
 
 	@Override
