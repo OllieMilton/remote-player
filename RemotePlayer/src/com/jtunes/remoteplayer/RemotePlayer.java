@@ -5,8 +5,8 @@ import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import com.jaudiostream.client.SlidingWindowClient;
-import com.jaudiostream.client.SlidingWindowClient.State;
+import com.jaudiostream.client.FullyBufferdSlidingWindowClient;
+import com.jaudiostream.client.JAudioStreamClient.State;
 import com.jtunes.util.audio.Analiser.AudioLevel;
 import com.jtunes.util.audio.AudioPlayer;
 import com.jtunes.util.audio.AudioPlayerEventListener;
@@ -31,7 +31,7 @@ import serialiser.factory.SerialiserFactory;
 @WebService(value=RemotePlayerService.remotePlayer, accessLevel=AccessLevel.TWO)
 public class RemotePlayer extends RemoteDeviceClient implements AudioPlayerEventListener, LevelListener {
 
-	private SlidingWindowClient jaudioStream;
+	private FullyBufferdSlidingWindowClient jaudioStream;
 	private AudioPlayer player;
 	private PlayerStatus status = new PlayerStatus();
 	private final long statusTimeout = 140;
@@ -142,7 +142,7 @@ public class RemotePlayer extends RemoteDeviceClient implements AudioPlayerEvent
 	
 	@Override
 	protected void beforeStart() {
-		jaudioStream = new SlidingWindowClient((newState, oldState) -> handleStreamStateChange(newState, oldState));
+		jaudioStream = new FullyBufferdSlidingWindowClient((newState, oldState) -> handleStreamStateChange(newState, oldState));
 		wsManager.registerWebService(this);
 	}
 	
