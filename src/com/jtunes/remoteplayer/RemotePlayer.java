@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.jaudiostream.client.FullyBufferdSlidingWindowClient;
+import com.jaudiostream.client.JAudioStreamClient;
 import com.jaudiostream.client.JAudioStreamClient.State;
 import com.jtunes.util.audio.Analiser.AudioLevel;
 import com.jtunes.util.audio.AudioPlayer;
@@ -31,7 +32,7 @@ import serialiser.factory.SerialiserFactory;
 @WebService(value=RemotePlayerService.remotePlayer, accessLevel=AccessLevel.TWO)
 public class RemotePlayer extends RemoteDeviceClient implements AudioPlayerEventListener, LevelListener {
 
-	private FullyBufferdSlidingWindowClient jaudioStream;
+	private JAudioStreamClient jaudioStream;
 	private AudioPlayer player;
 	private PlayerStatus status = new PlayerStatus();
 	private final long statusTimeout = 140;
